@@ -1,0 +1,16 @@
+{
+	"name": "1state",
+	"short_name": "1state",
+	"icons": [
+		{
+			"src": "/favicon.svg",
+			"sizes": "any",
+			"type": "image/svg+xml"
+		}
+	],
+	"theme_color": "#c2185b",
+	"background_color": "#000000",
+	"display": "standalone",
+	"start_url": "/",
+	"prefer_related_applications": false
+}

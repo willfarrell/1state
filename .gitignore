@@ -141,3 +141,15 @@ dist
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 .vite/
+
+# Mutation testing
+.stryker-tmp/
+
+# Agents
+## /graphify hook install
+.husky/post-checkout
+.husky/post-commit
+graphify-out
+
+# OS
+.DS_Store

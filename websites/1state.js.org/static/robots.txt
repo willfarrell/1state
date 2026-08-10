@@ -1,0 +1,4 @@
+sitemap: https://1state.js.org/sitemap.xml
+
+User-agent: *
+Disallow:

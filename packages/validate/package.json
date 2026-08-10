@@ -1,0 +1,57 @@
+{
+	"name": "@1state/validate",
+	"version": "0.0.0",
+	"description": "static checks for a 1state machine definition",
+	"type": "module",
+	"types": "./index.d.ts",
+	"exports": {
+		".": {
+			"types": "./index.d.ts",
+			"default": "./index.js"
+		},
+		"./schema": {
+			"types": "./schema.d.ts",
+			"default": "./schema.js"
+		}
+	},
+	"bin": {
+		"1state-validate": "./cli.js"
+	},
+	"files": [
+		"index.js",
+		"index.d.ts",
+		"schema.js",
+		"schema.d.ts",
+		"cli.js"
+	],
+	"scripts": {
+		"test": "npm run test:unit",
+		"test:unit": "node --test index.test.js",
+		"test:mutation": "cd ../.. && MUTATE_PACKAGE=\"$(basename \"$OLDPWD\")\" stryker run"
+	},
+	"keywords": [
+		"state",
+		"fsm",
+		"validate",
+		"json-schema",
+		"scxml"
+	],
+	"author": "willfarrell",
+	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/willfarrell/1state.git",
+		"directory": "packages/validate"
+	},
+	"engines": {
+		"node": ">=20"
+	},
+	"publishConfig": {
+		"access": "public"
+	},
+	"dependencies": {
+		"@1state/core": "*",
+		"ajv": "^8.18.0",
+		"ajv-keywords": "5.1.0"
+	}
+}

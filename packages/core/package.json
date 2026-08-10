@@ -1,0 +1,44 @@
+{
+	"name": "@1state/core",
+	"version": "0.0.0",
+	"description": "javascript finite state machine",
+	"type": "module",
+	"types": "./index.d.ts",
+	"exports": {
+		".": {
+			"types": "./index.d.ts",
+			"default": "./index.js"
+		}
+	},
+	"files": [
+		"index.js",
+		"index.d.ts"
+	],
+	"scripts": {
+		"test": "npm run test:unit",
+		"test:unit": "node --test --experimental-test-coverage --test-coverage-include='index.js' --test-coverage-lines=100 --test-coverage-branches=100 --test-coverage-functions=100 index.test.js",
+		"test:perf": "node --test index.perf.js",
+		"test:mutation": "cd ../.. && MUTATE_PACKAGE=\"$(basename \"$OLDPWD\")\" stryker run"
+	},
+	"keywords": [
+		"state",
+		"fsm",
+		"finite",
+		"machine",
+		"scxml",
+		"statechart"
+	],
+	"author": "willfarrell",
+	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/willfarrell/1state.git",
+		"directory": "packages/core"
+	},
+	"engines": {
+		"node": ">=20"
+	},
+	"publishConfig": {
+		"access": "public"
+	}
+}

@@ -1,0 +1,35 @@
+<script>
+import BodyFooter from "@design-system/components/BodyFooter.svelte";
+import Image from "@design-system/components/Image.svelte";
+import A from "@design-system/elements/a.svelte";
+
+const navLinks = {
+	Docs: {
+		Documentation: "/docs",
+		Packages: "/docs/packages/core",
+		"LLMs (Large Language Models)": "/llms.txt",
+	},
+	"Community & support": {
+		GitHub: "https://github.com/willfarrell/1state",
+	},
+	More: {
+		npm: "https://www.npmjs.com/package/@1state/core",
+		"OpenSSF Scorecard":
+			"https://scorecard.dev/viewer/?uri=github.com/willfarrell/1state",
+		Sponsor: "https://github.com/sponsors/willfarrell",
+	},
+};
+</script>
+
+<BodyFooter navLinks={navLinks}>
+    {#snippet logo()}
+        <A href="/">
+          <Image
+            src="/img/1state-logo.svg"
+            alt="1state logo, to the homepage"
+            width="48"
+			height="48"
+          />
+        </A>
+    {/snippet}
+</BodyFooter>

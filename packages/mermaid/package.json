@@ -1,0 +1,51 @@
+{
+	"name": "@1state/mermaid",
+	"version": "0.0.0",
+	"description": "render a 1state machine definition as a mermaid stateDiagram-v2",
+	"type": "module",
+	"types": "./index.d.ts",
+	"exports": {
+		".": {
+			"types": "./index.d.ts",
+			"default": "./index.js"
+		}
+	},
+	"bin": {
+		"1state-mermaid": "./cli.js"
+	},
+	"files": [
+		"index.js",
+		"index.d.ts",
+		"cli.js"
+	],
+	"scripts": {
+		"test": "npm run test:unit",
+		"test:unit": "node --test index.test.js cli.test.js",
+		"test:mutation": "cd ../.. && MUTATE_PACKAGE=\"$(basename \"$OLDPWD\")\" stryker run"
+	},
+	"keywords": [
+		"state",
+		"fsm",
+		"mermaid",
+		"diagram",
+		"docs",
+		"scxml"
+	],
+	"author": "willfarrell",
+	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/willfarrell/1state.git",
+		"directory": "packages/mermaid"
+	},
+	"engines": {
+		"node": ">=20"
+	},
+	"publishConfig": {
+		"access": "public"
+	},
+	"devDependencies": {
+		"jsdom": "30.0.1",
+		"mermaid": "11.16.1"
+	}
+}
