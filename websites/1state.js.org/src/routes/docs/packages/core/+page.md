@@ -79,7 +79,7 @@ Series-only, like `path()` and `back()`. Do not feed `toValue(segments)` into
 ## Performance
 
 `npm run perf --workspace @1state/core` runs the benchmark suite in
-`index.perf.js`.
+`index.bench.js`.
 
 The test suite is held at 100% line, branch and function coverage by the package's
 own `test` script, and the repository runs mutation testing over it with Stryker.

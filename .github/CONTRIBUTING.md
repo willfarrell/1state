@@ -48,7 +48,7 @@ npm run test:lint          # Biome linting
 npm run test:unit          # Unit tests
 npm run test:types         # TypeScript type checking (tstyche)
 npm run test:mutation      # Mutation tests (Stryker)
-npm run test:perf          # Performance benchmarks (tinybench)
+npm run test:bench          # Performance benchmarks (node:bench)
 npm run test:sast          # Static analysis, secrets, licences, lockfile
 
 # Run tests for a single package
@@ -72,6 +72,17 @@ npm run docs:check   # fail if it is out of date
 - Formatting and linting are handled by [Biome](https://biomejs.dev/) (`biome.json`)
 - Commit messages follow [Conventional Commits](https://www.conventionalcommits.org/) enforced by commitlint
 - Husky pre-commit hooks run linting and tests automatically
+
+
+## Releasing (maintainers)
+
+Merging a version-bump PR into `main` triggers the release workflow, which
+builds, attests, and stages the npm publish (`npm stage publish`). The staged
+packages do not go live until a maintainer approves them:
+
+```bash
+npm run release:approve   # requires npm login with 2FA
+```
 
 
 ## Licence

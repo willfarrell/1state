@@ -1,29 +1,7 @@
-import { ok } from "node:assert";
-import test from "node:test";
-import { Bench } from "tinybench";
+import { bench, suite } from "node:bench";
 import { createMachine } from "./index.js";
 
-const time = Number(process.env.BENCH_TIME ?? 5_000);
-
-// A benchmark that throws or yields zero throughput is a regression, not a
-// "pass". Fail the test instead of only printing a table.
-const assertHealthy = (bench) => {
-	ok(bench.tasks.length > 0, `${bench.name}: no tasks ran`);
-	for (const task of bench.tasks) {
-		ok(!task.result?.error, `${bench.name}: "${task.name}" threw`);
-		ok(
-			(task.result?.throughput?.mean ?? 0) > 0,
-			`${bench.name}: "${task.name}" produced no throughput`,
-		);
-	}
-};
-
-const report = async (bench) => {
-	await bench.run();
-	assertHealthy(bench);
-	console.log(`\n${bench.name}`);
-	console.table(bench.table());
-};
+const opts = { warmup: 10, samples: 30 };
 
 // -- Fixtures --
 
@@ -135,59 +113,95 @@ const sections = composed(12);
 const sectionAnswers = filled(12);
 const sectioned = await started(sections, { context: sectionAnswers });
 
-// -- Tests --
+// -- Benchmarks --
 
-test("perf: compile", async () => {
-	const bench = new Bench({ name: "compile", time });
+// Each sample times a batch of `ops` calls between b.start()/b.end(ops).
+const run = (ops, fn) => async (b) => {
+	b.start();
+	for (let i = 0; i < ops; i++) await fn();
+	b.end(ops);
+};
 
-	bench
-		.add("compile 6 states", () => createMachine(flat(6)))
-		.add("compile 1000 states", () => createMachine(flat(1000)))
-		.add("compile 12 nested sections", () => createMachine(sections));
+suite("core", () => {
+	// compile
+	bench(
+		"compile 6 states",
+		opts,
+		run(1_000, () => createMachine(flat(6))),
+	);
+	bench(
+		"compile 1000 states",
+		opts,
+		run(10, () => createMachine(flat(1000))),
+	);
+	bench(
+		"compile 12 nested sections",
+		opts,
+		run(100, () => createMachine(sections)),
+	);
 
-	await report(bench);
-});
+	// send
+	bench(
+		"send: 6 states",
+		opts,
+		run(1_000, () => small.send("ping")),
+	);
+	bench(
+		"send: 1000 states",
+		opts,
+		run(1_000, () => wide.send("ping")),
+	);
+	bench(
+		"send: 5 levels deep",
+		opts,
+		run(1_000, () => deep.send("ping")),
+	);
+	bench(
+		"send: bubble 5 levels to root",
+		opts,
+		run(1_000, () => bubbler.send("ping")),
+	);
+	bench(
+		"send: 4 parallel regions",
+		opts,
+		run(1_000, () => forked.send("ping")),
+	);
 
-test("perf: send", async () => {
-	const bench = new Bench({ name: "send", time });
+	// page render
+	bench(
+		"path(): 10-step wizard",
+		opts,
+		run(1_000, () => form.path()),
+	);
+	// What a page render actually costs: resume from stored answers, settling
+	// across every hand-off, then the guard and Back link for the requested step.
+	// back() isn't listed — it is path() plus one transition, and it would walk
+	// the shared fixture backwards out from under the other tasks.
+	bench(
+		"start(): resume across 12 sections",
+		opts,
+		run(100, () => started(sections, { context: { ...sectionAnswers } })),
+	);
+	bench(
+		"path(): across 12 sections",
+		opts,
+		run(1_000, () => sectioned.path()),
+	);
+	bench(
+		"route(): guard + back link",
+		opts,
+		run(1_000, () => sectioned.route(["s11", "one"])),
+	);
 
-	bench
-		.add("send: 6 states", () => small.send("ping"))
-		.add("send: 1000 states", () => wide.send("ping"))
-		.add("send: 5 levels deep", () => deep.send("ping"))
-		.add("send: bubble 5 levels to root", () => bubbler.send("ping"))
-		.add("send: 4 parallel regions", () => forked.send("ping"));
-
-	await report(bench);
-});
-
-test("perf: page render", async () => {
-	const bench = new Bench({ name: "page render", time });
-
-	bench
-		.add("path(): 10-step wizard", () => form.path())
-		// What a page render actually costs: resume from stored answers, settling
-		// across every hand-off, then the guard and Back link for the requested step.
-		// back() isn't listed — it is path() plus one transition, and it would walk
-		// the shared fixture backwards out from under the other tasks.
-		.add("start(): resume across 12 sections", () =>
-			started(sections, { context: { ...sectionAnswers } }),
-		)
-		.add("path(): across 12 sections", () => sectioned.path())
-		.add("route(): guard + back link", () => sectioned.route(["s11", "one"]));
-
-	await report(bench);
-});
-
-test("perf: recompile", async () => {
-	const bench = new Bench({ name: "recompile", time });
-
+	// recompile
 	// The whole point of compiling: pay the table build once, not per transition.
-	bench.add("send: 1000 states, recompiled each time", async () => {
-		const machine = createMachine(flat(1000));
-		await machine.start();
-		await machine.send("ping");
-	});
-
-	await report(bench);
+	bench(
+		"send: 1000 states, recompiled each time",
+		opts,
+		run(10, async () => {
+			const machine = createMachine(flat(1000));
+			await machine.start();
+			await machine.send("ping");
+		}),
+	);
 });

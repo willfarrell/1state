@@ -17,12 +17,15 @@
 		"LICENSE",
 		".license.template",
 		"**/.gitignore",
+		"**/.npmrc",
 		"**/*.fuzz.js",
-		"**/*.perf.js",
+		"**/*.bench.js",
 		"**/*.test.js",
 		"**/*.tst.ts",
 		"**/*.md",
 		"**/*.yml",
+		"**/*.yaml",
+		"CNAME",
 		"websites/**/*",
 		".DS_Store"
 	]

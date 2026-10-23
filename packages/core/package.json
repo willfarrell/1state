@@ -17,7 +17,7 @@
 	"scripts": {
 		"test": "npm run test:unit",
 		"test:unit": "node --test --experimental-test-coverage --test-coverage-include='index.js' --test-coverage-lines=100 --test-coverage-branches=100 --test-coverage-functions=100 index.test.js",
-		"test:perf": "node --test index.perf.js",
+		"test:bench": "node --experimental-bench --bench 'index.bench.js'",
 		"test:mutation": "cd ../.. && MUTATE_PACKAGE=\"$(basename \"$OLDPWD\")\" stryker run"
 	},
 	"keywords": [
@@ -36,7 +36,7 @@
 		"directory": "packages/core"
 	},
 	"engines": {
-		"node": ">=20"
+		"node": ">=26"
 	},
 	"publishConfig": {
 		"access": "public"
